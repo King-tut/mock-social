@@ -1,20 +1,33 @@
 import react from "react";
-import Navbar from "./components/Navbar";
-import Register from "./components/Register";
+import {BrowserRouter, Navigate, Routes,Route } from "react-router-dom"
+import HomePage from "./scenes/homePage";
+import LoginPage from "./scenes/loginPage";
+import ProfilePage from "./scenes/profilePage";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+import { themeSettings } from "./theme";
+
 
 
 function App() {
-  //In order to use the state, use state followed by the name of the reducer that was used in the createSlice.
-  //Then use the dot notation to get the value of the key you want.. ie... .name, .email etc..
-  const userName = useSelector(state => state.user.name)
+  const mode = useSelector((state)=> state.mode)
+  const theme = useMemo(()=> createTheme(themeSettings(mode)), [mode]);
+  
   return (
-    <div className="App">
+    <div className="app">
+      <BrowserRouter>
+      <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Routes>
+        <Route path="/" element={LoginPage} />
+        <Route path="/Home" element={HomePage} />
+        <Route path="/profile/:userId" element={ProfilePage} />
+      </Routes>
+      </ThemeProvider>
+      </BrowserRouter>
       
-      <h3>This is the home page</h3>
-      <h2>{userName}</h2>
-      <Navbar/>
-      <Register/>
     </div>
   );
 }

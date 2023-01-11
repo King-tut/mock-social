@@ -1,22 +1,51 @@
 import {createSlice} from "@reduxjs/toolkit"
 
 const initialState = {
-    name: "Peter",
-    email: "peterparker@gmail.com"
-
+    mode: "light",
+    user: null,
+    token: null,
+    posts: [],
 }
 
-const userSlice = createSlice({
-    name: "user",
+export const authSlice = createSlice({
+    name: "auth",
     initialState,
-    reducers:{
-        showName(state){
-            return state.name
+    reducers: {
+        setMode: (state) =>{
+            state.mode = state.mode === "light" ? "dark" : "light"
 
+        },
+
+        setLogin: (state, action) =>{
+            state.user = action.payload.user
+            state.token = action.payload.token
+        },
+
+        setFriends: (state, action) =>{
+            if(state.user){
+                state.user.friends = action.payload.friends
+
+            } else{
+                console.error("user friends you no have.")
+            }
+
+        },
+
+        setPosts: (state, action) =>{
+            state.posts = action.payload.posts
+
+        },
+
+        setPost: (state, action) =>{
+            const updatedPosts = state.posts.map((post) => {
+                if(post.id == action.payload.post_id) return action.payload.post
+                return post;
+            })
+            state.posts = updatedPosts
 
         }
     }
 })
 
-export const {showName}  = userSlice.actions
-export default userSlice.reducer
+export const {setMode,setLogin, setFriends, setPost,setPosts} = authSlice.actions;
+export default authSlice.reducer
